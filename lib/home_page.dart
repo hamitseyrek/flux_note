@@ -54,13 +54,17 @@ class _HomePageState extends State<HomePage> {
                       itemBuilder: (context, index) {
                         final note = _homeViewModel.filteredNotes[index];
                         return ListTile(
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 4.0,
+                          ),
                           title: Text(note.title),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              IconButton(
-                                icon: const Icon(Icons.edit_outlined),
-                                onPressed: () {
+                              
+                              GestureDetector(
+                                onTap: () {
                                   NoteDialogs.showEditNoteDialog(
                                     context,
                                     note.title,
@@ -74,14 +78,16 @@ class _HomePageState extends State<HomePage> {
                                     },
                                   );
                                 },
+                                child: const Icon(Icons.edit_outlined, color: Colors.blue),
                               ),
-                              IconButton(
-                                icon: const Icon(Icons.delete_outline),
-                                onPressed: () {
+                              const SizedBox(width: 8.0),
+                              GestureDetector(
+                                onTap: () {
                                   setState(() {
                                     _homeViewModel.deleteNote(note.id);
                                   });
                                 },
+                                child: const Icon(Icons.delete_outline, color: Colors.red),
                               ),
                             ],
                           ),
