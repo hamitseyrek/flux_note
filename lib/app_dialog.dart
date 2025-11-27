@@ -43,5 +43,49 @@ class NoteDialogs {
       },
     );
   }
+
+  static void showEditNoteDialog(
+    BuildContext context,
+    String currentTitle,
+    { required Function(String) onSave}
+  ) {
+    final controller = TextEditingController(text: currentTitle);
+    showDialog<void>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: const Text('Edit note'),
+          content: TextField(
+            controller: controller,
+            autofocus: true,
+            decoration: const InputDecoration(
+              labelText: 'Note name',
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final title = controller.text.trim();
+                if (title.isEmpty) {
+                  return;
+                }
+                onSave(title);
+                Navigator.of(context).pop();
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 }
 

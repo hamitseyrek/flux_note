@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flux_note/app_dialog.dart';
 import 'package:flux_note/home_view_model.dart';
@@ -12,17 +11,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-late final HomeViewModel _homeViewModel;
+  late final HomeViewModel _homeViewModel;
 
-@override
+  @override
   void initState() {
     super.initState();
-    _homeViewModel = HomeViewModel()..addListener(() {
-      setState(() {});
-    });
+    _homeViewModel = HomeViewModel()
+      ..addListener(() {
+        setState(() {});
+      });
   }
 
-@override
+  @override
   void dispose() {
     _homeViewModel.removeListener(() {});
     super.dispose();
@@ -31,50 +31,78 @@ late final HomeViewModel _homeViewModel;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('My Flux Note App'),
-      ),
-      body: Padding(padding: const EdgeInsets.all(16.0),
-      child: Column(
-        children: [
-          TextField(
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'Search Notes',
+      appBar: AppBar(title: const Text('My Flux Note App')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Search Notes',
+              ),
+              onChanged: (value) {
+                _homeViewModel.searchNotes(value);
+              },
             ),
-            onChanged: (value) {
-              _homeViewModel.searchNotes(value);
-            },
-          ),
-          const SizedBox(height: 16.0),
-          Expanded(child: _homeViewModel.filteredNotes.isEmpty
-              ? const Center(child: Text('No notes available.'))
-              : ListView.builder(
-            itemCount: _homeViewModel.filteredNotes.length,
-            itemBuilder: (context, index) {
-              final note = _homeViewModel.filteredNotes[index];
-              return ListTile(
-                title: Text(note.title),
-              );
-            },
-          )),
-        ],
-      ),
+            const SizedBox(height: 16.0),
+            Expanded(
+              child: _homeViewModel.filteredNotes.isEmpty
+                  ? const Center(child: Text('No notes available.'))
+                  : ListView.builder(
+                      itemCount: _homeViewModel.filteredNotes.length,
+                      itemBuilder: (context, index) {
+                        final note = _homeViewModel.filteredNotes[index];
+                        return ListTile(
+                          title: Text(note.title),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: const Icon(Icons.edit_outlined),
+                                onPressed: () {
+                                  NoteDialogs.showEditNoteDialog(
+                                    context,
+                                    note.title,
+                                    onSave: (newTitle) {
+                                      setState(() {
+                                        final updatedNote = note.copyWith(
+                                          title: newTitle,
+                                        );
+                                        _homeViewModel.updateNote(updatedNote);
+                                      });
+                                    },
+                                  );
+                                },
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.delete_outline),
+                                onPressed: () {
+                                  setState(() {
+                                    _homeViewModel.deleteNote(note.id);
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+            ),
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          NoteDialogs.showAddNoteDialog(
-            context,
-            (title) {
-              final newNote = Note(
-                id: _homeViewModel.notes.length + 1,
-                title: title,
-              );
-              setState(() {
-                _homeViewModel.addNote(newNote);
-              });
-            },
-          );
+          NoteDialogs.showAddNoteDialog(context, (title) {
+            final newNote = Note(
+              id: _homeViewModel.notes.length + 1,
+              title: title,
+            );
+            setState(() {
+              _homeViewModel.addNote(newNote);
+            });
+          });
         },
         child: const Icon(Icons.add),
       ),
