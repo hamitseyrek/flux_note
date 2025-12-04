@@ -1,30 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:flux_note/app_dialog.dart';
-import 'package:flux_note/home_view_model.dart';
-import 'package:flux_note/note_model.dart';
+import 'package:flux_note/domain/entities/note_entity.dart';
+import 'package:flux_note/presentation/views/common/app_dialog.dart';
+import 'package:flux_note/presentation/viewmodels/home_view_model.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final HomeViewModel homeViewModel;
+  const HomePage({super.key,
+  required this.homeViewModel});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  late final HomeViewModel _homeViewModel;
+  HomeViewModel get _homeViewModel => widget.homeViewModel;
 
-  @override
+@override
   void initState() {
     super.initState();
-    _homeViewModel = HomeViewModel()
-      ..addListener(() {
-        setState(() {});
-      });
+    _homeViewModel.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
   void dispose() {
-    _homeViewModel.removeListener(() {});
+    _homeViewModel.removeListener(() { });
     super.dispose();
   }
 
@@ -101,7 +102,7 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           NoteDialogs.showAddNoteDialog(context, (title) {
-            final newNote = Note(
+            final newNote = NoteEntity(
               id: _homeViewModel.notes.length + 1,
               title: title,
             );

@@ -1,14 +1,14 @@
-class Note {
+class NoteEntity {
   final int id;
   final String title;
 
-  Note({
+  NoteEntity({
     required this.id,
     required this.title,
   });
 
-  Note copyWith({int? id,String? title}) {
-    return Note(
+  NoteEntity copyWith({int? id,String? title}) {
+    return NoteEntity(
       id: id ?? this.id,
       title: title ?? this.title,
     );
