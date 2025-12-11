@@ -8,7 +8,6 @@ import 'package:flux_note/domain/usecases/get_notes.dart';
 import 'package:flux_note/domain/usecases/update_note.dart';
 
 class HomeViewModel extends ChangeNotifier {
-
   HomeViewModel({
     required GetNotes getNotes,
     required AddNote addNote,
@@ -52,9 +51,7 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   void _loadNotes() {
-debugPrint('Notes loaded1: ${_notes.length} items');
     _notes = filteredNotes;
-debugPrint('Notes loaded2: ${_notes.length} items');
     notifyListeners();
   }
 
